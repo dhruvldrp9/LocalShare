@@ -5,34 +5,15 @@ six-character code and QR link, then a sender enters or scans it. Files are
 sent directly between browsers with WebRTC; the signaling server only helps
 the two devices find each other and exchange connection metadata.
 
-## Run the signaling service
+## Public signaling
 
-```bash
-npm install
-npm start
-```
+The browser uses the public PeerJS signaling service to introduce the two
+devices, so the GitHub Pages site does not need a custom `wss://` URL. The
+signaling service sees temporary peer IDs and setup metadata only. Files use a
+direct encrypted WebRTC data channel and are not uploaded to PeerJS.
 
-The server binds to `0.0.0.0` and can be deployed to Render, Railway, Fly.io,
-or a VPS. Set the frontend's `window.SHAREIT_SIGNALING_URL` to its secure
-`wss://` URL before publishing the static frontend. The server stores no files.
-
-### Deploy on Render
-
-1. Create a new Render Web Service from this repository.
-2. Render can use the included `render.yaml`, or set:
-   - Build command: `npm ci`
-   - Start command: `npm start`
-3. Copy the service URL, changing `https://` to `wss://`.
-4. Put that URL in [`config.js`](./config.js), for example:
-
-   ```js
-   window.SHAREIT_SIGNALING_URL = "wss://shareit-signaling.onrender.com";
-   ```
-
-5. Commit and push the config change so GitHub Pages uses the signaling service.
-
-The signaling service must support WebSockets. A normal static hosting URL,
-including the GitHub Pages URL, cannot be used as the `wss://` endpoint.
+The included `server.js` remains available for self-hosting, but it is not
+required for the GitHub Pages version.
 
 ## How to use
 
@@ -50,13 +31,8 @@ disconnects. The receiver must approve each sender.
 ## GitHub Pages
 
 The included workflow publishes the static frontend from the repository root.
-GitHub Pages serves the UI, but `server.js` must be deployed separately as a
-secure WebSocket service. The frontend supports `window.SHAREIT_SIGNALING_URL`
-so the public signaling URL can differ from the GitHub Pages URL.
-
-If `config.js` has an empty URL, ShareIt intentionally stops with a setup
-message instead of trying to connect to GitHub Pages and showing a misleading
-disconnect error.
+After deployment, open the GitHub Pages URL on both devices. No backend URL
+configuration is required.
 
 ## Browser support
 

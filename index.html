@@ -14,7 +14,7 @@
     <section id="setup" class="panel setup-panel">
       <div class="panel-heading"><div><p class="eyebrow">Get started</p><h2>Choose your role</h2></div><span class="step">01 / 02</span></div>
       <div class="role-grid"><button class="role-card" data-role="sender"><span class="role-icon">↑</span><strong>Send files</strong><span>Enter a receiver's six-character code or scan their QR code.</span></button><button class="role-card" data-role="receiver"><span class="role-icon">↓</span><strong>Receive files</strong><span>Create a secure code and share it with the sender.</span></button></div>
-      <div class="config"><label for="display-name">Your display name</label><input id="display-name" maxlength="40" placeholder="e.g. Alex's laptop" autocomplete="name"><label for="room-code" class="sender-only hidden">Receiver code</label><input id="room-code" class="sender-only hidden" maxlength="6" placeholder="ABC123" autocomplete="one-time-code" spellcheck="false"><p class="hint">Only a temporary pairing code is shared. Scan the receiver QR with your phone camera to open this page with the code filled in.</p></div>
+      <div class="config"><label for="display-name">Your display name</label><input id="display-name" maxlength="40" placeholder="e.g. Alex's laptop" autocomplete="name"><label for="room-code" class="sender-only hidden">Receiver code</label><input id="room-code" class="sender-only hidden" maxlength="6" placeholder="ABC123" autocomplete="one-time-code" spellcheck="false"><p class="hint">Pairing uses a temporary code through the public signaling network. Files transfer directly between browsers.</p></div>
     </section>
     <section id="workspace" class="panel workspace-panel hidden">
       <div class="workspace-head"><div><p class="eyebrow" id="role-label">SENDER MODE</p><h2 id="workspace-title">Nearby devices</h2></div><button id="change-role" class="text-button">Change role</button></div>
@@ -24,6 +24,6 @@
     </section>
     <p class="footnote">Transfers are end-to-end encrypted by WebRTC and stay on your local network whenever your network allows direct connections.</p>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="config.js"></script><script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="app.js"></script>
 </body>
 </html>
