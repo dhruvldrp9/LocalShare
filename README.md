@@ -1,7 +1,7 @@
 # ShareIt
 
 ShareIt is a browser-based file transfer app. A receiver creates a temporary
-six-character code and QR link, then a sender enters or scans it. Files are
+six-character code, then a sender enters it. Files are
 sent directly between browsers with WebRTC; the signaling server only helps
 the two devices find each other and exchange connection metadata.
 
@@ -19,8 +19,8 @@ required for the GitHub Pages version.
 
 1. Open ShareIt on both devices.
 2. The receiver chooses **Receive files**, enters a display name, and shares the
-   generated six-character code or QR link.
-3. The sender chooses **Send files**, enters the code, or scans the QR link.
+   generated six-character code.
+3. The sender chooses **Send files** and enters the code.
 4. The receiver accepts the connection request.
 5. The sender chooses files and selects **Send files**. The receiver saves each
    completed file.

@@ -48,8 +48,7 @@
     peer.on("error", (error) => status(error.type === "peer-unavailable" ? "That code is unavailable or expired." : "Could not connect to the sharing service.", true));
   }
   function showRoom(code) {
-    $("room-display").innerHTML = `<strong>${code}</strong><div id="qrcode"></div><small>Share this code or scan the QR image</small>`;
-    if (window.QRCode) new QRCode($("qrcode"), { text: `${location.origin}${location.pathname}?room=${code}`, width: 150, height: 150, colorDark: "#20352b", colorLight: "#ffffff" });
+    $("room-display").innerHTML = `<strong>${code}</strong><small>Share this six-character code with the sender</small>`;
     status("Ready to receive");
   }
   function renderRequest(message) {
@@ -88,7 +87,6 @@
   }
   function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
   function formatSize(size) { return `${(size / 1024 / 1024).toFixed(2)} MB`; }
-  $("room-code").value = new URLSearchParams(location.search).get("room") || "";
   $("join-room").onclick = openSender;
   $("files").onchange = (event) => { files = [...event.target.files]; $("selected-files").innerHTML = files.map((file) => `<div class="selected-item"><span>${escapeHtml(file.name)}</span><small>${formatSize(file.size)}</small></div>`).join(""); $("send-files").disabled = !files.length; };
   $("send-files").onclick = transfer;
