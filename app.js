@@ -89,6 +89,7 @@
   function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
   function formatSize(size) { return `${(size / 1024 / 1024).toFixed(2)} MB`; }
   $("room-code").value = new URLSearchParams(location.search).get("room") || "";
+  $("join-room").onclick = openSender;
   $("files").onchange = (event) => { files = [...event.target.files]; $("selected-files").innerHTML = files.map((file) => `<div class="selected-item"><span>${escapeHtml(file.name)}</span><small>${formatSize(file.size)}</small></div>`).join(""); $("send-files").disabled = !files.length; };
   $("send-files").onclick = transfer;
   $("change-role").onclick = () => location.reload();
@@ -98,6 +99,6 @@
     document.querySelectorAll(".sender-only").forEach((element) => element.classList.toggle("hidden", role !== "sender"));
     $("role-label").textContent = `${role.toUpperCase()} MODE`;
     $("workspace-title").textContent = role === "sender" ? "Join a receiver" : "Ready to receive";
-    if (role === "receiver") openReceiver(); else openSender();
+    if (role === "receiver") openReceiver();
   });
 })();
