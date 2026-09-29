@@ -21,12 +21,13 @@ required for the GitHub Pages version.
 2. The receiver chooses **Receive files**, enters a display name, and shares the
    generated six-character code.
 3. The sender chooses **Send files** and enters the code.
-4. The receiver accepts the connection request.
+4. The six-character code authorizes the connection automatically.
 5. The sender chooses files and selects **Send files**. The receiver saves each
    completed file.
 
 Codes are cryptographically random, temporary, and removed when the receiver
-disconnects. The receiver must approve each sender.
+disconnects. Anyone who has the active code can connect, so share it only with
+the intended sender.
 
 ## GitHub Pages
 

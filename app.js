@@ -22,7 +22,9 @@
       connection = incomingConnection;
       connection.on("open", () => {
         connection.on("data", receiveMessage);
-        renderRequest(connection);
+        connection.send({ type: "accepted" });
+        $("request-area").innerHTML = '<div class="empty">Sender connected. Waiting for files…</div>';
+        status("Connected directly. Waiting for files");
       });
     });
     peer.on("error", (error) => {
@@ -47,9 +49,9 @@
       });
       connection.on("open", () => {
         connection.on("data", receiveMessage);
-        connection.send({ type: "request", name: name() });
-        $("sender-room").textContent = "Request sent. Waiting for receiver approval…";
-        status("Waiting for receiver approval");
+        $("sender-room").textContent = "Connected to the receiver. Choose files below.";
+        $("file-picker").classList.remove("hidden");
+        status("Connected directly. Ready to transfer");
       });
     });
     peer.on("error", (error) => {
@@ -61,14 +63,6 @@
   function showRoom(code) {
     $("room-display").innerHTML = `<strong>${code}</strong><small>Share this six-character code with the sender</small>`;
     status("Ready to receive");
-  }
-  function renderRequest(message) {
-    $("request-area").innerHTML = `<div class="request"><div><strong>${escapeHtml(message.name)}</strong><small>wants to send you files</small></div><button class="accept">Accept request</button></div>`;
-    $("request-area").querySelector("button").onclick = () => {
-      connection.send({ type: "accepted" });
-      $("request-area").innerHTML = '<div class="empty">Connected. Waiting for files…</div>';
-      status("Connected directly");
-    };
   }
   function receiveMessage(message) {
     if (message.type === "accepted") {
