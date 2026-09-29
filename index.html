@@ -4,26 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Private, direct file sharing for devices on your local network.">
-  <title>LocalShare — private LAN file sharing</title>
+  <title>ShareIt — private file sharing</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="./"><span class="brand-mark">↗</span> LocalShare</a><span class="privacy"><span class="pulse"></span> LAN only</span></header>
+  <header class="topbar"><a class="brand" href="./"><span class="brand-mark">↗</span> ShareIt</a><span class="privacy"><span class="pulse"></span> Private transfer</span></header>
   <main>
-    <section class="hero"><p class="eyebrow">Private by design</p><h1>Move files between<br><em>nearby devices.</em></h1><p class="hero-copy">A simple, direct way to share documents on the same Wi-Fi. No accounts. No uploads. No cloud.</p></section>
+    <section class="hero"><p class="eyebrow">Private by design</p><h1>Move files between<br><em>any two devices.</em></h1><p class="hero-copy">Share documents directly with a temporary code or QR scan. No accounts. No uploads. No file storage.</p></section>
     <section id="setup" class="panel setup-panel">
       <div class="panel-heading"><div><p class="eyebrow">Get started</p><h2>Choose your role</h2></div><span class="step">01 / 02</span></div>
-      <div class="role-grid"><button class="role-card" data-role="sender"><span class="role-icon">↑</span><strong>Send files</strong><span>Choose documents and share them with a nearby device.</span></button><button class="role-card" data-role="receiver"><span class="role-icon">↓</span><strong>Receive files</strong><span>Become visible to senders and accept an incoming request.</span></button></div>
-      <div class="config"><label for="display-name">Your display name</label><input id="display-name" maxlength="40" placeholder="e.g. Alex's laptop" autocomplete="name"><p class="hint">Your local connection is detected automatically. This server only introduces devices; file data travels directly between browsers.</p></div>
+      <div class="role-grid"><button class="role-card" data-role="sender"><span class="role-icon">↑</span><strong>Send files</strong><span>Enter a receiver's six-character code or scan their QR code.</span></button><button class="role-card" data-role="receiver"><span class="role-icon">↓</span><strong>Receive files</strong><span>Create a secure code and share it with the sender.</span></button></div>
+      <div class="config"><label for="display-name">Your display name</label><input id="display-name" maxlength="40" placeholder="e.g. Alex's laptop" autocomplete="name"><label for="room-code" class="sender-only hidden">Receiver code</label><input id="room-code" class="sender-only hidden" maxlength="6" placeholder="ABC123" autocomplete="one-time-code" spellcheck="false"><p class="hint">Only a temporary pairing code is shared. Scan the receiver QR with your phone camera to open this page with the code filled in.</p></div>
     </section>
     <section id="workspace" class="panel workspace-panel hidden">
       <div class="workspace-head"><div><p class="eyebrow" id="role-label">SENDER MODE</p><h2 id="workspace-title">Nearby devices</h2></div><button id="change-role" class="text-button">Change role</button></div>
       <div id="connection-status" class="status"><span class="status-dot"></span><span>Connecting to the LAN…</span></div>
-      <div id="sender-view" class="hidden"><div class="section-title"><span>Available to receive</span><span id="device-count">0 devices</span></div><div id="device-list" class="device-list"><div class="empty">Waiting for a receiver to come online…</div></div><div id="file-picker" class="file-picker hidden"><input id="files" type="file" multiple><label for="files"><span class="upload-icon">＋</span><strong>Choose files to send</strong><span>or drop them here</span></label><div id="selected-files"></div><button id="send-files" class="primary" disabled>Send files</button></div></div>
-      <div id="receiver-view" class="hidden"><div class="ready-card"><span class="ready-icon">✓</span><div><strong>You are visible to senders</strong><p>Keep this tab open. You will be asked before any connection starts.</p></div></div><div id="request-area" class="request-area"><div class="empty">Waiting for a sender to request a connection…</div></div><div id="received-files" class="received-files"></div></div>
+      <div id="sender-view" class="hidden"><div id="sender-room" class="empty">Enter the receiver code above to connect.</div><div id="file-picker" class="file-picker hidden"><input id="files" type="file" multiple><label for="files"><span class="upload-icon">＋</span><strong>Choose files to send</strong><span>or drop them here</span></label><div id="selected-files"></div><button id="send-files" class="primary" disabled>Send files</button></div></div>
+      <div id="receiver-view" class="hidden"><div class="ready-card"><span class="ready-icon">✓</span><div><strong>Your secure code is ready</strong><p>Share this code or QR image with the sender.</p></div></div><div id="room-display" class="room-display"></div><div id="request-area" class="request-area"><div class="empty">Waiting for a sender to join…</div></div><div id="received-files" class="received-files"></div></div>
     </section>
     <p class="footnote">Transfers are end-to-end encrypted by WebRTC and stay on your local network whenever your network allows direct connections.</p>
   </main>
-  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="config.js"></script><script src="app.js"></script>
 </body>
 </html>

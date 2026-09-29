@@ -1,8 +1,8 @@
 {
-  "name": "localshare",
+  "name": "shareit",
   "version": "1.0.0",
   "private": true,
-  "description": "LAN-only browser file sharing with WebRTC",
+  "description": "Public code-based browser file sharing with WebRTC",
   "scripts": {
     "start": "node server.js"
   },
