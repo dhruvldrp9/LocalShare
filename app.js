@@ -12,6 +12,9 @@
   function send(message) { if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify(message)); }
   function name() { return $("display-name").value.trim() || "Anonymous"; }
   function connect() {
+    if (location.hostname.endsWith(".github.io") && !window.SHAREIT_SIGNALING_URL) {
+      return status("Add your deployed wss:// signaling URL to config.js. GitHub Pages hosts the UI only.", true);
+    }
     try { socket = new WebSocket(signalingUrl); } catch { return status("The sharing service address is invalid.", true); }
     socket.onopen = () => {
       status("Connected securely");
@@ -19,7 +22,7 @@
       else send({ type: "join-room", code: $("room-code").value, name: name() });
     };
     socket.onerror = () => status("Could not reach the sharing service.", true);
-    socket.onclose = () => status("Sharing service unavailable. Please try again.", true);
+    socket.onclose = () => status("Sharing service unavailable. Check the deployed wss:// URL in config.js.", true);
     socket.onmessage = async ({ data }) => {
       const message = JSON.parse(data);
       if (message.type === "room-created") showRoom(message.code);

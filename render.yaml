@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: shareit-signaling
+    runtime: node
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /

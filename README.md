@@ -16,6 +16,24 @@ The server binds to `0.0.0.0` and can be deployed to Render, Railway, Fly.io,
 or a VPS. Set the frontend's `window.SHAREIT_SIGNALING_URL` to its secure
 `wss://` URL before publishing the static frontend. The server stores no files.
 
+### Deploy on Render
+
+1. Create a new Render Web Service from this repository.
+2. Render can use the included `render.yaml`, or set:
+   - Build command: `npm ci`
+   - Start command: `npm start`
+3. Copy the service URL, changing `https://` to `wss://`.
+4. Put that URL in [`config.js`](./config.js), for example:
+
+   ```js
+   window.SHAREIT_SIGNALING_URL = "wss://shareit-signaling.onrender.com";
+   ```
+
+5. Commit and push the config change so GitHub Pages uses the signaling service.
+
+The signaling service must support WebSockets. A normal static hosting URL,
+including the GitHub Pages URL, cannot be used as the `wss://` endpoint.
+
 ## How to use
 
 1. Open ShareIt on both devices.
@@ -35,6 +53,10 @@ The included workflow publishes the static frontend from the repository root.
 GitHub Pages serves the UI, but `server.js` must be deployed separately as a
 secure WebSocket service. The frontend supports `window.SHAREIT_SIGNALING_URL`
 so the public signaling URL can differ from the GitHub Pages URL.
+
+If `config.js` has an empty URL, ShareIt intentionally stops with a setup
+message instead of trying to connect to GitHub Pages and showing a misleading
+disconnect error.
 
 ## Browser support
 
