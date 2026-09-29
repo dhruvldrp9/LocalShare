@@ -34,18 +34,29 @@
   function openSender() {
     const code = $("room-code").value.trim().toUpperCase();
     if (!/^[A-Z0-9]{6}$/.test(code)) return status("Enter the receiver's six-character code.", true);
+    if (typeof Peer !== "function") return status("The connection library did not load. Refresh and try again.", true);
+    $("join-room").disabled = true;
+    $("join-room").textContent = "Connecting…";
     peer = new Peer({ debug: 0 });
     peer.on("open", () => {
       connection = peer.connect(`shareit-${code.toLowerCase()}`, { reliable: true });
+      connection.on("error", () => {
+        $("join-room").disabled = false;
+        $("join-room").textContent = "Connect";
+        status("That code is unavailable or expired.", true);
+      });
       connection.on("open", () => {
         connection.on("data", receiveMessage);
         connection.send({ type: "request", name: name() });
         $("sender-room").textContent = "Request sent. Waiting for receiver approval…";
         status("Waiting for receiver approval");
       });
-      connection.on("error", () => status("That code is unavailable or expired.", true));
     });
-    peer.on("error", (error) => status(error.type === "peer-unavailable" ? "That code is unavailable or expired." : "Could not connect to the sharing service.", true));
+    peer.on("error", (error) => {
+      $("join-room").disabled = false;
+      $("join-room").textContent = "Connect";
+      status(error.type === "peer-unavailable" ? "That code is unavailable or expired." : "Could not connect to the sharing service.", true);
+    });
   }
   function showRoom(code) {
     $("room-display").innerHTML = `<strong>${code}</strong><small>Share this six-character code with the sender</small>`;
