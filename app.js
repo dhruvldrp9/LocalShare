@@ -3,6 +3,7 @@
   const setup = $("setup"), workspace = $("workspace"), senderView = $("sender-view"), receiverView = $("receiver-view");
   let role, peer, connection, files = [], incoming = null, incomingChunks = [];
   const codeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let connectionTimer;
 
   function status(text, error = false) {
     $("connection-status").innerHTML = `<span class="status-dot"></span><span>${text}</span>`;
@@ -15,23 +16,42 @@
     return [...bytes].map((byte) => codeAlphabet[byte % codeAlphabet.length]).join("");
   }
   function openReceiver() {
+    if (typeof Peer !== "function") return status("The connection library did not load. Refresh and try again.", true);
     const code = randomCode();
     peer = new Peer(`shareit-${code.toLowerCase()}`, { debug: 0 });
-    peer.on("open", () => showRoom(code));
+    peer.on("open", () => {
+      clearTimeout(connectionTimer);
+      showRoom(code);
+    });
     peer.on("connection", (incomingConnection) => {
       connection = incomingConnection;
       connection.on("open", () => {
+        clearTimeout(connectionTimer);
         connection.on("data", receiveMessage);
         connection.send({ type: "accepted" });
         $("request-area").innerHTML = '<div class="empty">Sender connected. Waiting for files…</div>';
         status("Connected directly. Waiting for files");
       });
+      connection.on("close", () => {
+        status("Sender disconnected. Your code is still active.");
+        $("request-area").innerHTML = '<div class="empty">Waiting for a sender to join…</div>';
+      });
     });
     peer.on("error", (error) => {
-      if (error.type === "unavailable-id") return openReceiver();
-      status("Could not create a secure sharing room. Please try again.", true);
+      clearTimeout(connectionTimer);
+      if (error.type === "unavailable-id") {
+        status("That room code was already in use. Please reload to create a new code.", true);
+      } else {
+        status("Could not create a secure sharing room. Please try again.", true);
+      }
     });
     peer.on("disconnected", () => status("Sharing service unavailable. Please try again.", true));
+    connectionTimer = setTimeout(() => {
+      if (!peer?.open) {
+        peer.destroy();
+        status("The sharing service did not respond. Please refresh and try again.", true);
+      }
+    }, 15000);
   }
   function openSender() {
     const code = $("room-code").value.trim().toUpperCase();
@@ -42,23 +62,43 @@
     peer = new Peer({ debug: 0 });
     peer.on("open", () => {
       connection = peer.connect(`shareit-${code.toLowerCase()}`, { reliable: true });
+      connectionTimer = setTimeout(() => {
+        if (!connection?.open) {
+          peer.destroy();
+          $("join-room").disabled = false;
+          $("join-room").textContent = "Connect";
+          status("Connection timed out. Check the six-character code and try again.", true);
+        }
+      }, 15000);
       connection.on("error", () => {
+        clearTimeout(connectionTimer);
         $("join-room").disabled = false;
         $("join-room").textContent = "Connect";
         status("That code is unavailable or expired.", true);
       });
       connection.on("open", () => {
+        clearTimeout(connectionTimer);
         connection.on("data", receiveMessage);
         $("sender-room").textContent = "Connected to the receiver. Choose files below.";
         $("file-picker").classList.remove("hidden");
         status("Connected directly. Ready to transfer");
       });
+      connection.on("close", () => status("The receiver disconnected.", true));
     });
     peer.on("error", (error) => {
+      clearTimeout(connectionTimer);
       $("join-room").disabled = false;
       $("join-room").textContent = "Connect";
       status(error.type === "peer-unavailable" ? "That code is unavailable or expired." : "Could not connect to the sharing service.", true);
     });
+    connectionTimer = setTimeout(() => {
+      if (!peer?.open) {
+        peer.destroy();
+        $("join-room").disabled = false;
+        $("join-room").textContent = "Connect";
+        status("The sharing service did not respond. Please refresh and try again.", true);
+      }
+    }, 15000);
   }
   function showRoom(code) {
     $("room-display").innerHTML = `<strong>${code}</strong><small>Share this six-character code with the sender</small>`;
@@ -79,7 +119,7 @@
     }
   }
   async function transfer() {
-    if (!connection || !connection.open) return status("Wait for the receiver to accept.", true);
+    if (!connection || !connection.open) return status("Connect to the receiver before sending.", true);
     for (const file of files) {
       connection.send({ type: "file", name: file.name, size: file.size, mime: file.type });
       for (let offset = 0; offset < file.size; offset += 64 * 1024) {
